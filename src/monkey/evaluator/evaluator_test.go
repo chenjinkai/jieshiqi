@@ -1,7 +1,6 @@
 package evaluator
 
 import (
-	"jieshiqi/src/monkey/ast"
 	"jieshiqi/src/monkey/lexer"
 	"jieshiqi/src/monkey/object"
 	"jieshiqi/src/monkey/parser"
@@ -46,32 +45,33 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 	return true
 }
 
-// evaluator/evaluator.go
+// evaluator/evaluator_test.go
 
-func Eval(node ast.Node) object.Object {
-	switch node := node.(type) {
-
-	// 语句
-	case *ast.Program:
-		return evalStatements(node.Statements)
-
-	case *ast.ExpressionStatement:
-		return Eval(node.Expression)
-
-	// 表达式
-	case *ast.IntegerLiteral:
-		return &object.Integer{Value: node.Value}
+func TestEvalBooleanExpression(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected bool
+	}{
+		{"true", true},
+		{"false", false},
 	}
 
-	return nil
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		testBooleanObject(t, evaluated, tt.expected)
+	}
 }
 
-func evalStatements(stmts []ast.Statement) object.Object {
-	var result object.Object
-
-	for _, statement := range stmts {
-		result = Eval(statement)
+func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
+	result, ok := obj.(*object.Boolean)
+	if !ok {
+		t.Errorf("object is not Boolean. got=%T (%+v)", obj, obj)
+		return false
 	}
-
-	return result
+	if result.Value != expected {
+		t.Errorf("object has wrong value. got=%t, want=%t",
+			result.Value, expected)
+		return false
+	}
+	return true
 }
