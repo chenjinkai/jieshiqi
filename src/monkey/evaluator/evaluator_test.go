@@ -14,6 +14,8 @@ func TestEvalIntegerExpression(t *testing.T) {
 	}{
 		{"5", 5},
 		{"10", 10},
+		{"-5", -5},
+		{"-10", -10},
 	}
 
 	for _, tt := range tests {
@@ -44,8 +46,6 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 
 	return true
 }
-
-// evaluator/evaluator_test.go
 
 func TestEvalBooleanExpression(t *testing.T) {
 	tests := []struct {
